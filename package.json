@@ -13,7 +13,9 @@
     "style:fix": "biome format --changed --write ."
   },
   "dependencies": {
+    "@ant-design/icons": "^5.4.0",
     "@tanstack/react-query": "^5.51.15",
+    "antd": "^5.19.3",
     "dotenv": "^16.4.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"

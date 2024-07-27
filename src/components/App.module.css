@@ -1,0 +1,19 @@
+.header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+}
+
+.walletInput {
+    max-width: 40%;
+}
+
+.grid {
+    min-height: 256px;
+}
+
+.empty {
+    margin-top: 128px;
+}

@@ -23,8 +23,11 @@ export type NftsResponse = {
 
 const LIMIT = 50;
 const COLLECTION_SLUG = 'pudgypenguins';
-// '0x3bB4Fa84B120aC0DBB4A6bb0442fE2c47E324A93'
+const EMPTY_RESPONSE: NftsResponse = {
+    nfts: [],
+};
 
+// address with some Pudgy Penguins: 0x3bB4Fa84B120aC0DBB4A6bb0442fE2c47E324A93
 export function useNftsQuery(walletAddress: string) {
     return useQuery<NftsResponse>({
         queryKey: ['nfts', walletAddress],
@@ -52,7 +55,5 @@ async function fetchNfts(walletAddress: string, limit: number, nextCursor: strin
         }
     );
 
-    // TODO: what if response is NOT successful?
-
-    return response.json();
+    return response.ok ? response.json() : EMPTY_RESPONSE;
 }

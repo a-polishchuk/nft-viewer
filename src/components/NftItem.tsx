@@ -49,7 +49,7 @@ export function NftItem({ nft, size }: Props) {
     );
 
     return (
-        <Popover title={nft.name} content={content}>
+        <Popover title={nft.name} content={content} trigger={['click']}>
             <img src={nft.display_image_url} alt={nft.name} width={size} height={size} />
         </Popover>
     );

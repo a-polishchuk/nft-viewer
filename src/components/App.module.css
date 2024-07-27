@@ -7,13 +7,26 @@
 }
 
 .walletInput {
-    max-width: 40%;
+    min-width: 40vw;
+}
+
+.empty {
+    margin-top: 128px;
 }
 
 .grid {
     min-height: 256px;
 }
 
-.empty {
-    margin-top: 128px;
+.gridItem {
+    transition: all 0.3s;
 }
+
+.gridItem:hover {
+    transform: scale(1.1, 1.1);
+}
+
+/* .gridItem:hover~.gridItem,
+.grid:hover .gridItem:not(:hover) {
+    opacity: 0.3;
+} */

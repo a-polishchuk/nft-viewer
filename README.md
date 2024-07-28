@@ -1,30 +1,28 @@
-# React + TypeScript + Vite
+# Pudgy Penguins Viewer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a React SPA that allows you to enter Ethereum wallet address and view all Pudgy Penguins NFTs
+that belongs to this address.
 
-Currently, two official plugins are available:
+It uses Opensea API to fetch NFTs.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+You can check the demo [here](a-polishchuk.github.io/nft-viewer/)
 
-## Expanding the ESLint configuration
+## Tech stack
+- React
+- Typescript
+- React Query (to manage state that come from the back end)
+- Ant Design (UI components library)
+- Web3 (to validate Ethereum address)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Run the project locally
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```
+npm i
+npm run dev
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Build production version
+```
+npm build
+npm preview
+```

@@ -27,12 +27,11 @@ const EMPTY_RESPONSE: NftsResponse = {
     nfts: [],
 };
 
-// address with some Pudgy Penguins: 0x3bB4Fa84B120aC0DBB4A6bb0442fE2c47E324A93
-export function useNftsQuery(walletAddress: string) {
+export function useNftsQuery(walletAddress: string, enabled: boolean) {
     return useQuery<NftsResponse>({
         queryKey: ['nfts', walletAddress],
         queryFn: () => fetchNfts(walletAddress, LIMIT, undefined),
-        enabled: !!walletAddress,
+        enabled,
         retry: false,
     });
 }
@@ -55,5 +54,11 @@ async function fetchNfts(walletAddress: string, limit: number, nextCursor: strin
         }
     );
 
-    return response.ok ? response.json() : EMPTY_RESPONSE;
+    if (!response.ok) {
+        // some error tracking may be added here
+        console.error(response.statusText);
+        return EMPTY_RESPONSE;
+    }
+
+    return response.json();
 }

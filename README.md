@@ -5,7 +5,7 @@ that belongs to this address.
 
 It uses Opensea API to fetch NFTs.
 
-You can check the demo [here](a-polishchuk.github.io/nft-viewer/)
+You can check the demo [here](https://a-polishchuk.github.io/nft-viewer/)
 
 ## Tech stack
 - React

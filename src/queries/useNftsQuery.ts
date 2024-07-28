@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 
 export type Nft = {
     identifier: string;
@@ -19,24 +19,32 @@ export type Nft = {
 
 export type NftsResponse = {
     nfts: Nft[];
+    next?: string;
 };
 
-const LIMIT = 50;
+const LIMIT = 10;
 const COLLECTION_SLUG = 'pudgypenguins';
 const EMPTY_RESPONSE: NftsResponse = {
     nfts: [],
 };
 
 export function useNftsQuery(walletAddress: string, enabled: boolean) {
-    return useQuery<NftsResponse>({
+    return useInfiniteQuery({
         queryKey: ['nfts', walletAddress],
-        queryFn: () => fetchNfts(walletAddress, LIMIT, undefined),
-        enabled,
+        queryFn: ({ pageParam }) => fetchNfts(walletAddress, LIMIT, pageParam),
+        getNextPageParam: (lastPage) => lastPage.next,
+        initialPageParam: '',
+        enabled: !!walletAddress && enabled,
         retry: false,
+        staleTime: 0,
     });
 }
 
-async function fetchNfts(walletAddress: string, limit: number, nextCursor: string | undefined) {
+async function fetchNfts(
+    walletAddress: string,
+    limit: number,
+    nextCursor: string | undefined
+): Promise<NftsResponse> {
     const params = new URLSearchParams();
     params.set('owner', walletAddress);
     params.set('collection', COLLECTION_SLUG);
@@ -56,7 +64,12 @@ async function fetchNfts(walletAddress: string, limit: number, nextCursor: strin
 
     if (!response.ok) {
         // some error tracking may be added here
-        console.error(response.statusText);
+        try {
+            const parsed = await response.json();
+            console.error(parsed);
+        } catch {
+            console.error(response.status, response.statusText);
+        }
         return EMPTY_RESPONSE;
     }
 

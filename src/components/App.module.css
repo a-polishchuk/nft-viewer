@@ -6,6 +6,13 @@
     padding: 16px;
 }
 
+.headerRow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px
+}
+
 .walletInput {
     min-width: 40vw;
 }
@@ -14,19 +21,10 @@
     margin-top: 128px;
 }
 
-.grid {
-    min-height: 256px;
-}
-
 .gridItem {
     transition: all 0.3s;
 }
 
 .gridItem:hover {
-    transform: scale(1.1, 1.1);
+    transform: scale(1.05, 1.05);
 }
-
-/* .gridItem:hover~.gridItem,
-.grid:hover .gridItem:not(:hover) {
-    opacity: 0.3;
-} */

@@ -1,10 +1,11 @@
-import { useNftsQuery } from 'queries/useNftsQuery';
+import { type Nft, useNftsQuery } from 'queries/useNftsQuery';
 import { NftItem } from './NftItem';
 import { WalletInput } from './WalletInput';
 import { KnownWallet } from './KnownWallet';
 import classes from './App.module.css';
-import { Col, Empty, Form, Row, Space, Spin, Typography } from 'antd';
+import { Button, Col, Form, Row, Typography } from 'antd';
 import { useDebouncedValue } from 'hooks/useDebouncedValue';
+import { LoadingOutlined, ReloadOutlined } from '@ant-design/icons';
 
 const KNOWN_WALLETS = [
     '0x3bB4Fa84B120aC0DBB4A6bb0442fE2c47E324A93',
@@ -22,41 +23,56 @@ export function App() {
     const noErrors = form.getFieldError('address').length === 0;
 
     const debouncedAddress = useDebouncedValue(walletAddress, DEBOUNCE_DELAY);
-    const { data, isFetching } = useNftsQuery(debouncedAddress, noErrors);
-    const nfts = data?.nfts ?? [];
+    const { data, isFetching, hasNextPage, fetchNextPage } = useNftsQuery(
+        debouncedAddress,
+        noErrors
+    );
+    const allNfts = data?.pages.reduce<Nft[]>((acc, page) => acc.concat(page.nfts), []) || [];
 
     return (
         <>
             <header className={classes.header}>
                 <Title level={2}>Pudgy Penguins Viewer</Title>
-                <Form form={form}>
+                <Form form={form} layout="vertical">
                     <WalletInput className={classes.walletInput} />
-                    <Space>
+                    <div className={classes.headerRow}>
                         Known wallets:
                         {KNOWN_WALLETS.map((w) => (
                             <KnownWallet key={w} wallet={w} />
                         ))}
-                    </Space>
+                    </div>
                 </Form>
-                {nfts.length ? <Title level={3}>NFTs found: {nfts.length}</Title> : null}
+                <Title level={3}>
+                    NFTs found:{' '}
+                    {isFetching ? (
+                        <LoadingOutlined />
+                    ) : (
+                        `${allNfts.length}${hasNextPage ? '+' : ''}`
+                    )}
+                </Title>
             </header>
             <main>
-                <Spin size="large" spinning={isFetching}>
-                    {nfts.length ? (
-                        <Row gutter={[16, 16]} justify="center" className={classes.grid}>
-                            {nfts.map((nft) => (
-                                <Col key={nft.display_image_url} className={classes.gridItem}>
-                                    <NftItem nft={nft} size={256} />
-                                </Col>
-                            ))}
-                        </Row>
-                    ) : data ? (
-                        <Empty
-                            className={classes.empty}
-                            description="Nothing found for this address"
-                        />
-                    ) : null}
-                </Spin>
+                {allNfts.length ? (
+                    <Row gutter={[16, 16]} justify="center" align="middle">
+                        {allNfts.map((nft) => (
+                            <Col key={nft.display_image_url} className={classes.gridItem}>
+                                <NftItem nft={nft} size={256} />
+                            </Col>
+                        ))}
+                        {hasNextPage && (
+                            <Col>
+                                <Button
+                                    icon={<ReloadOutlined />}
+                                    size="large"
+                                    onClick={() => fetchNextPage()}
+                                    loading={isFetching}
+                                >
+                                    Show more
+                                </Button>
+                            </Col>
+                        )}
+                    </Row>
+                ) : null}
             </main>
         </>
     );

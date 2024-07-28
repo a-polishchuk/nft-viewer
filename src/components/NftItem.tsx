@@ -1,7 +1,11 @@
-import { Popover, Typography } from 'antd';
+import { Card, Descriptions, Modal } from 'antd';
+import type { DescriptionsItemType } from 'antd/es/descriptions';
 import type { Nft } from 'queries/useNftsQuery';
+import { useState } from 'react';
 
-const { Text } = Typography;
+const { Meta } = Card;
+
+const PADDING = 24;
 
 type Props = {
     nft: Nft;
@@ -9,48 +13,62 @@ type Props = {
 };
 
 export function NftItem({ nft, size }: Props) {
-    const content = (
-        <table>
-            <tbody>
-                <tr>
-                    <td>
-                        <Text type="secondary">ID</Text>
-                    </td>
-                    <td>
-                        <Text strong>{nft.identifier}</Text>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <Text type="secondary">Collection</Text>
-                    </td>
-                    <td>
-                        <Text strong>{nft.collection}</Text>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <Text type="secondary">Token</Text>
-                    </td>
-                    <td>
-                        <Text code>{nft.token_standard}</Text>
-                    </td>
-                </tr>
-                {nft.description && (
-                    <tr>
-                        <td style={{ verticalAlign: 'top' }}>
-                            <Text type="secondary">Description</Text>
-                        </td>
-                        <td style={{ maxWidth: 150 }}>{nft.description}</td>
-                    </tr>
-                )}
-            </tbody>
-        </table>
-    );
+    const [modalVisible, setModalVisible] = useState(false);
 
     return (
-        <Popover title={nft.name} content={content} trigger={['click']}>
-            <img src={nft.display_image_url} alt={nft.name} width={size} height={size} />
-        </Popover>
+        <>
+            <Card
+                hoverable
+                style={{ width: 256 }}
+                cover={
+                    <img src={nft.display_image_url} alt={nft.name} width={size} height={size} />
+                }
+                onClick={() => setModalVisible(true)}
+            >
+                <Meta title={nft.name} description={nft.description} />
+            </Card>
+            <Modal
+                centered
+                closable
+                width={(size + PADDING) * 2}
+                title={nft.name}
+                open={modalVisible}
+                onCancel={() => setModalVisible(false)}
+                footer={null}
+            >
+                <img
+                    src={nft.display_image_url}
+                    alt={nft.name}
+                    width={size * 2}
+                    height={size * 2}
+                />
+                <Descriptions bordered layout="vertical" items={buidlDescriptionItems(nft)} />
+            </Modal>
+        </>
     );
+}
+
+function buidlDescriptionItems(nft: Nft): DescriptionsItemType[] {
+    return [
+        {
+            key: 'id',
+            label: 'ID',
+            children: nft.identifier,
+        },
+        {
+            key: 'collection',
+            label: 'Collection',
+            children: nft.collection,
+        },
+        {
+            key: 'token',
+            label: 'Token',
+            children: nft.token_standard,
+        },
+        {
+            key: 'description',
+            label: 'Description',
+            children: nft.description,
+        },
+    ];
 }
